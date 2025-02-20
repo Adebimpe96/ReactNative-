@@ -1,0 +1,31 @@
+{
+    "extends":  "stylelint-config-standard-scss",
+    "plugins": [
+      "stylelint-media-use-custom-media"
+    ],
+    "rules": {
+      "selector-class-pattern": null,
+      "declaration-block-no-redundant-longhand-properties": 
+      [true,
+        {"ignoreShorthands": ["flex-flow"]}
+      ],
+      "number-leading-zero": "never",
+      "block-opening-brace-space-before": "always",
+      "max-line-length": 140,
+      "import-notation": "url",
+      "indentation": 2,
+      "color-hex-case": "upper",
+      "color-hex-length": "long",
+      "csstools/media-use-custom-media": "always",
+      "color-function-notation": "legacy",
+      "selector-pseudo-class-no-unknown": [
+        true,
+        {
+          "ignorePseudoClasses": [
+            "global"
+          ]
+        }
+      ],
+      "value-list-comma-newline-after": null
+    }
+}
