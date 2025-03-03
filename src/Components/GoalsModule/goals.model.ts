@@ -11,10 +11,9 @@ export interface ICourseGoals {
 }
 
 export interface IGoalItem {
-  id: number
-  title: string
+  goal: ICourseGoals
   onDeleteItem: (id: number) => void
-  OnEditItem: () => void
+  OnEditItem: (goal: ICourseGoals) => void
 }
 
 export const goalCollections = collection(db, 'todos')

@@ -2,15 +2,15 @@ import { StyleSheet, View, Text, TouchableOpacity } from 'react-native'
 import { IGoalItem } from './goals.model'
 import { Ionicons } from '@expo/vector-icons' // Make sure to install this: expo install @expo/vector-icons
 
-const GoalItem = ({ id, title, onDeleteItem, OnEditItem }: IGoalItem) => {
+const GoalItem = ({onDeleteItem, OnEditItem, goal }: IGoalItem) => {
   return (
     <View style={styles.goalListStyle}>
-      <Text style={styles.goalTitleStyle}>{title}</Text>
+      <Text style={styles.goalTitleStyle}>{goal.goals}</Text>
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity onPress={OnEditItem} style={styles.button}>
+        <TouchableOpacity onPress={() => OnEditItem(goal)} style={styles.button}>
           <Ionicons name="create-outline" size={20} color="white" />
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => onDeleteItem(id)} style={styles.button}>
+        <TouchableOpacity onPress={() => onDeleteItem(goal.id)} style={styles.button}>
           <Ionicons name="trash-outline" size={20} color="white" />
         </TouchableOpacity>
       </View>
