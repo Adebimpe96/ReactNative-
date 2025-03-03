@@ -17,7 +17,7 @@ const GoalInput = ({ isVisible, onCancel }: GoalProps) => {
     try {
       await addDoc(goalCollections, {
         goals: enteredGoalText,
-        id: new Date().getTime(),
+        id: String(new Date().getTime()),
       })
     } catch (error) {
       console.error(error)

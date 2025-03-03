@@ -1,4 +1,4 @@
-import { addDoc, doc, updateDoc } from 'firebase/firestore'
+import { doc, updateDoc } from 'firebase/firestore'
 import React, { useEffect, useState } from 'react'
 import { View, TextInput, Button, StyleSheet, Modal, Image } from 'react-native'
 import { db } from '../../Config/firebase'
@@ -8,8 +8,10 @@ interface GoalProps {
   isVisible: boolean
   goal: ICourseGoals| null
   onCancel: () => void
+  onFinishEditing: (id: string, newGoal: string) => void
+  refreshGoals: () => void
 }
-const GoalEditInput = ({ isVisible, goal, onCancel }: GoalProps) => {
+const GoalEditInput = ({ isVisible, goal, onCancel, onFinishEditing, refreshGoals }: GoalProps) => {
   const [enteredGoalText, setEnteredGoalText] = useState<string>('')
 
    useEffect(() => {
@@ -24,10 +26,14 @@ const GoalEditInput = ({ isVisible, goal, onCancel }: GoalProps) => {
   const editGoal = async (id: string) => {
     if (!goal) return
     try {
-      const goalDoc = doc(db, 'todos', id.toString())
+      onFinishEditing(id, enteredGoalText)
+      onCancel()
+
+      const goalDoc = doc(db, 'todos', id)
       await updateDoc(goalDoc, { description: enteredGoalText })
       setEnteredGoalText('')
-      onCancel()
+
+      refreshGoals()
     } catch (error) {
       console.error(error)
     }

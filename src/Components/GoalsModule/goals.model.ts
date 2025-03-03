@@ -2,7 +2,7 @@ import { db } from '../../Config/firebase'
 import { collection } from 'firebase/firestore'
 
 export interface ICourseGoals {
-  id: number
+  id: string
   goals: string
   description?: string
   completed?: boolean
@@ -11,7 +11,7 @@ export interface ICourseGoals {
 }
 
 export interface IGoalItem {
-  id: number
+  id: string
   title: string
   onDeleteItem: (id: number) => void
   OnEditItem: () => void

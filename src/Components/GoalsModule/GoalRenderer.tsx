@@ -15,25 +15,30 @@ const GoalRenderer = () => {
   const [selectedGoal, setSelectedGoal] = useState<ICourseGoals | null>(null)
 
   useEffect(() => {
-    const getGoalList = async () => {
+    getGoalList()
+  }, [])
+
+  const getGoalList = async () => {
       try {
         const goalData = await getDocs(goalCollections)
         const goalDataObj: ICourseGoals[] = goalData.docs.map((doc) => ({
           id: doc.data().id,
           goals: doc.data().goals,
-        }))
+        })).filter((goal) => !!goal.id)
         setCourseGoals(goalDataObj)
       } catch (error) {
         console.error(error)
       }
     }
-    getGoalList()
-  }, [])
 
   const deleteGoal = async (id: string) => {
     try {
+      setCourseGoals((currentCourseGoals) => currentCourseGoals.filter((goal) => goal.id !== id))
+
       const goalDoc = doc(db, 'todos', id)
       await deleteDoc(goalDoc)
+
+      getGoalList();
     } catch (error) {
       console.error(error)
       console.log('delete')
@@ -57,6 +62,12 @@ const GoalRenderer = () => {
   function closeEditGoalHandler() {
     setEditModalIsVisible(false)
   }
+
+  const finishEditHandler = (id: string, newGoal: string) => {
+    setCourseGoals((currentCourseGoals) => currentCourseGoals.map((goal) => goal.id === id ? { ...goal, goals: newGoal
+      } : goal
+    ))
+  }
   // function addGoalHandler(enteredGoalText: string) {
   //   setCourseGoals((currentCourseGoals) => [...currentCourseGoals, { goals: enteredGoalText, id: new Date().getTime() }])
   //   closeGoalHandler()
@@ -77,7 +88,7 @@ const GoalRenderer = () => {
       <View style={styles.appContainer}>
         <Button title="Add New Goal" color="#5e0acc" onPress={startAddGoalHandler} />
         <GoalInput isVisible={modalIsVisible} onCancel={closeGoalHandler} />
-        <GoalEditInput isVisible={editModalIsVisible} onCancel={closeEditGoalHandler} goal={selectedGoal} />
+        <GoalEditInput isVisible={editModalIsVisible} onCancel={closeEditGoalHandler} goal={selectedGoal} onFinishEditing={finishEditHandler} refreshGoals={getGoalList} />
         <View style={styles.goalsContainer}>
           <FlatList
             data={courseGoals}
