@@ -1,5 +1,5 @@
 import { db } from '../../Config/firebase'
-import { getDocs, addDoc, collection } from 'firebase/firestore'
+import { collection } from 'firebase/firestore'
 
 export interface ICourseGoals {
   id: number
@@ -14,6 +14,7 @@ export interface IGoalItem {
   id: number
   title: string
   onDeleteItem: (id: number) => void
+  OnEditItem: () => void
 }
 
 export const goalCollections = collection(db, 'todos')

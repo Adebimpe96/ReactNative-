@@ -1,30 +1,40 @@
-import { addDoc } from 'firebase/firestore'
-import React, { useState } from 'react'
+import { addDoc, doc, updateDoc } from 'firebase/firestore'
+import React, { useEffect, useState } from 'react'
 import { View, TextInput, Button, StyleSheet, Modal, Image } from 'react-native'
-import { goalCollections } from './goals.model'
+import { db } from '../../Config/firebase'
+import { ICourseGoals } from './goals.model'
 
 interface GoalProps {
   isVisible: boolean
+  goal: ICourseGoals| null
   onCancel: () => void
 }
-const GoalInput = ({ isVisible, onCancel }: GoalProps) => {
+const GoalEditInput = ({ isVisible, goal, onCancel }: GoalProps) => {
   const [enteredGoalText, setEnteredGoalText] = useState<string>('')
 
+   useEffect(() => {
+     if (goal) {
+       setEnteredGoalText(goal.goals)
+     }
+   }, [goal])
+  
   function goalInputHandler(enteredText: string) {
     setEnteredGoalText(enteredText)
   }
-  const addGoals = async () => {
+  const editGoal = async (id: string) => {
+    if (!goal) return
     try {
-      await addDoc(goalCollections, {
-        goals: enteredGoalText,
-        id: new Date().getTime(),
-      })
+      const goalDoc = doc(db, 'todos', id.toString())
+      await updateDoc(goalDoc, { description: enteredGoalText })
+      setEnteredGoalText('')
+      onCancel()
     } catch (error) {
       console.error(error)
     }
   }
-  function addGoalHandler() {
-    addGoals()
+
+  function editGoalHandler(id: string) {
+    editGoal(id)
     setEnteredGoalText('')
   }
 
@@ -32,10 +42,10 @@ const GoalInput = ({ isVisible, onCancel }: GoalProps) => {
     <Modal visible={isVisible} animationType="slide">
       <View style={styles.inputContainer}>
         <Image style={styles.image} source={require('../../assets/images/goal.png')} />
-        <TextInput style={styles.textInput} placeholder="My course goal!" onChangeText={goalInputHandler} value={enteredGoalText} />
+        <TextInput style={styles.textInput} onChangeText={goalInputHandler} value={enteredGoalText} />
         <View style={styles.buttonContainer}>
           <View style={styles.button}>
-            <Button title="Add Goal" onPress={addGoalHandler} color="#b180f0" />
+            <Button title="Edit Goal" onPress={() => editGoalHandler(String(goal?.id))} color="#b180f0" />
           </View>
           <View style={styles.button}>
             <Button title="Cancel" onPress={onCancel} color="#f31282" />
@@ -46,7 +56,7 @@ const GoalInput = ({ isVisible, onCancel }: GoalProps) => {
   )
 }
 
-export default GoalInput
+export default GoalEditInput
 
 const styles = StyleSheet.create({
   inputContainer: {
