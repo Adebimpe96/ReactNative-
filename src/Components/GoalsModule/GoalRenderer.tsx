@@ -95,8 +95,7 @@ const GoalRenderer = () => {
             renderItem={(itemData) => {
               return (
                 <GoalItem
-                  title={itemData.item.goals}
-                  id={itemData.item.id}
+                  goal={itemData.item}
                   onDeleteItem={() => deleteGoal(String(itemData.item.id))}
                   OnEditItem={() => openEditGoalHandler(itemData.item)}
                 />
